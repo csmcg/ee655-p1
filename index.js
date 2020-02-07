@@ -17,6 +17,11 @@ let products = [{id: 0,
 				 quantity: 12,
 				 price: 8.99}];
 
+app.get('/', (req, res) => {
+	res.statusCode = 200; // OK
+	res.sendFile('index.html');
+});
+
 app.get('/products', (req, res) =>{
 	response = '<h1>Products</h1>';
 	products.forEach(product => {
@@ -31,5 +36,4 @@ app.get('/products', (req, res) =>{
 app.listen(port, () => {
 	console.log(`server listening on port ${port}`);
 })
-
 
