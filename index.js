@@ -19,7 +19,7 @@ let products = [{id: 0,
 
 app.get('/', (req, res) => {
 	res.statusCode = 200; // OK
-	res.sendFile('index.html');
+	res.sendFile(__dirname + '/index.html');
 });
 
 app.get('/products', (req, res) =>{
@@ -32,6 +32,22 @@ app.get('/products', (req, res) =>{
 	console.log(response);
 	res.status(200).send(response);
 });
+
+// get product by id
+app.get('/products/:id', (req, res) => {
+	console.log('Product ' + req.params.id + ' requested');
+	res.end(JSON.stringify(products[req.params.id]));
+});
+
+/* app.get('/products/delete/:id', (req, res) => {
+	console.log('Product ID:' + req.params.id + ' requested for deletion.');
+	// delete the product
+	
+}); */
+
+/* app.post('/add_product', (req, res) => {
+	
+}); */
 
 app.listen(port, () => {
 	console.log(`server listening on port ${port}`);
