@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({extended: false}));
  *		- /update_product/id
 */
 
-let products = [{id: 0,
+var products = [{id: 0,
 				 name: "apple",
 				 quantity: 5,
 				 price: 2.99},
@@ -52,7 +52,7 @@ app.get('/products', (req, res) =>{
 // get product by id
 app.get('/products/:id', (req, res) => {
 	console.log('Product ' + req.params.id + ' requested');
-	res.end(JSON.stringify(products[req.params.id]));
+	res.end(`<html><h1>Requested Product:</h1><p>ID: ${products[req.params.id].id}, Name: ${products[req.params.id].name}, Quantity: ${products[req.params.id].quantity}, Price: $${products[req.params.id].price}</p>`);
 });
 
 app.get('/delete/:id', (req, res) => {
@@ -65,6 +65,13 @@ app.get('/delete/:id', (req, res) => {
 	});
 	sortProducts(products);
 	console.log(products);
+	res.end(`<html>Product ID = ${req.params.id} deleted.</html>`);
+});
+
+app.get('/delete', (req, res) => {
+	console.log('Request for deletion of all products received.');
+	products = [];
+	res.end('All products deleted.');
 });
 
 app.post('/add_product/id', (req, res) => {
@@ -81,32 +88,31 @@ app.post('/add_product/id', (req, res) => {
 });
 
 app.post('/update_product/id', (req, res) => {
-	updated_product = {};
-	try { products.forEach((product) => {
+	var updated_product = {id: "", name: "", quantity: "", price: ""};
+	flag = false;
+	products.forEach((product) => {
 		if (req.body.id == product.id) {
 			Object.keys(product).forEach((key) => {
-				if (product[key] == "") {
-					; // don't update this field
+				if (req.body[key] == "") {
 					updated_product[key] = product[key];
 				}
 				else {
-					product[key] = req.body.key;
+					product[key] = req.body[key];
 					updated_product[key] = product[key];
 				};
 			});
 			// product updated
 			console.log('Updated product: ' + JSON.stringify(updated_product));
+			products[product.id] = product;
 			sortProducts(products);
-			throw BreakException;
-		}
-	});
-	} catch (e) {
-		if (e !== BreakException) throw e;
-		else {
+			console.log(products);
+			flag = true;
 			res.sendFile(__dirname + '/updatedproduct.html');
 		}
-	};
-	res.end('<html><head><title>Product not found</title></head><body>Product was not found under that ID. Click <a href=\"http://localhost:3000/\">here</a> to return home and try again.</body></html>"');
+	});
+	if (!flag) {
+		res.end('<html><head><title>Product not found</title></head><body>Product was not found under that ID. Click <a href=\"http://localhost:3000/\">here</a> to return home and try again.</body></html>');
+	}
 });
 
 app.listen(port, () => {
