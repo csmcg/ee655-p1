@@ -20,14 +20,14 @@ var products = [{id: 0,
 				 name: "apple",
 				 quantity: 5,
 				 price: 2.99},
-				{id: 1,
-				 name: "orange",
-				 quantity: 10,
-				 price: 5.99},
 				{id: 2,
 				 name: "test",
 				 quantity: 2,
 				 price: 3.00},
+				{id: 1,
+				 name: "orange",
+				 quantity: 10,
+				 price: 5.99},
 				{id: 3,
 				 name: "banana",
 				 quantity: 12,
@@ -51,8 +51,12 @@ app.get('/products', (req, res) =>{
 
 // get product by id
 app.get('/products/:id', (req, res) => {
-	console.log('Product ' + req.params.id + ' requested');
-	res.end(`<html><h1>Requested Product:</h1><p>ID: ${products[req.params.id].id}, Name: ${products[req.params.id].name}, Quantity: ${products[req.params.id].quantity}, Price: $${products[req.params.id].price}</p>`);
+	console.log('Product ID ' + req.params.id + ' requested');
+	reqProduct = products.find(product => product.id == req.params.id);
+	if (reqProduct === undefined)
+		res.end(`<html><h1>Product not found.</h1><p>Product ID ${req.params.id} not in inventory.</p></html>`);
+	else
+		res.end(`<html><h1>Requested Product:</h1><p>ID: ${reqProduct.id}, Name: ${reqProduct.name}, Quantity: ${reqProduct.quantity}, Price: $${reqProduct.price}</p>`);
 });
 
 app.get('/delete/:id', (req, res) => {
@@ -61,11 +65,14 @@ app.get('/delete/:id', (req, res) => {
 	products.forEach(product => {
 		if (product.id == req.params.id) {
 			_.remove(products, product);
+			productFound = true;
+			res.end(`<html>Product ID = ${req.params.id} deleted.</html>`);
 		}
 	});
+	if (!productFound)
+		res.end(`<html>Product ID ${req.params.id} did not exist.</html>`);
 	sortProducts(products);
 	console.log(products);
-	res.end(`<html>Product ID = ${req.params.id} deleted.</html>`);
 });
 
 app.get('/delete', (req, res) => {
@@ -102,6 +109,14 @@ app.post('/update_product/id', (req, res) => {
 				};
 			});
 			// product updated
+			updated_product.id = Number(updated_product.id);
+			updated_product.quantity = Number(updated_product.quantity);
+			updated_product.price = Number(updated_product.price);
+			
+			product.id = Number(product.id);
+			product.quantity = Number(product.quantity);
+			product.price = Number(product.price);
+			
 			console.log('Updated product: ' + JSON.stringify(updated_product));
 			products[product.id] = product;
 			sortProducts(products);
