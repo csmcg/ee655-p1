@@ -1,9 +1,25 @@
 <html>
 	<head>
+		<title>Product Inventory</title>
 	</head>
 	<body>
-		<form action="http://localhost:3000/products/id" method="GET">
-			Enter product id to retrieve: <input type="text" name="id">
+		<h1>Inventory Dashboard</h1>
+		<h2>Add a product:</h2>
+		<form action="http://localhost:3000/add_product/id" method="POST">
+			<p>Enter product id to add: <input type="text" name="id"></p>
+			<p>Enter name of product: <input type="text" name="name"></p>
+			<p>Enter quantity: <input type="text" name="quantity"></p>
+			<p>Enter price: <input type="text" name="price"></p>
+			<input type="submit" value="Add product">
 		</form>
+		<h2>Update a product:</h2>
+		<form action="http://localhost:3000/update_product/id" method="POST">
+			<p>Enter information you wish to update. Leave blank to keep previous value. ID is required.</p>
+			<p>Enter product id to update (required): <input type="text" name="id" required></p>
+			<p>Enter new product name: <input type="text" name="name"></p>
+			<p>Enter new quantity: <input type="text" name="quantity"></p>
+			<p>Enter new price: <input type="text" name="price"></p>
+			<input type="submit" value="Update product">
+	</form>
 	</body>
 </html>
