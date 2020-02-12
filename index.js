@@ -83,15 +83,20 @@ app.get('/delete', (req, res) => {
 
 app.post('/add_product/id', (req, res) => {
 	new_product = {};
-	new_product.id = Number(req.body.id);
-	new_product.name = req.body.name;
-	new_product.quantity = Number(req.body.quantity);
-	new_product.price = Number(req.body.price);
-	console.log(`New product added: ${JSON.stringify(new_product)}`);
-	products.push(new_product);
-	sortProducts(products);
-	console.log('Products state: ' + products);
-	res.sendFile(__dirname + '/productadded.html');
+	if (products.find(product => product.id == req.body.id) !== undefined) {
+		res.end('<html><h1>Product already exists</h1><p>Click <a href="http://localhost:3000">here</a> to return to dashboard.</p></html>');
+	}
+	else {
+		new_product.id = Number(req.body.id);
+		new_product.name = req.body.name;
+		new_product.quantity = Number(req.body.quantity);
+		new_product.price = Number(req.body.price);
+		console.log(`New product added: ${JSON.stringify(new_product)}`);
+		products.push(new_product);
+		sortProducts(products);
+		console.log('Products state: ' + products);
+		res.sendFile(__dirname + '/productadded.html');
+	}
 });
 
 app.post('/update_product/id', (req, res) => {
